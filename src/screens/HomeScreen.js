@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect,useRef } from 'react';
 import {
   View, Text, TextInput, TouchableOpacity,
   Modal, StyleSheet, Dimensions, ScrollView, Image,Button, Platform
@@ -10,6 +10,8 @@ import { calculatePolygonArea } from '../utils/calculateArea';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import 'react-native-get-random-values';
 import { v4 as uuidv4 } from 'uuid';
+import Icon from 'react-native-vector-icons/FontAwesome';
+import * as Location from 'expo-location';
 const { width } = Dimensions.get('window');
 
 const COLORS = ['#00B4D8', '#90BE6D', '#ff78eb', '#F9C74F', '#577590', '#43AA8B', '#E07A5F', '#F3722C','#fff'];
@@ -30,7 +32,10 @@ const [tempHarvestDate, setTempHarvestDate] = useState(new Date());
   const [modalVisible1, setModalVisible1] = useState(false);
   const [newTask, setNewTask] = useState('');
   const [taskInputVisible, setTaskInputVisible] = useState(false);
+  const [showInput, setShowInput] = useState(false);
+  const [place, setPlace] = useState('');
 
+const mapRef = useRef(null);
 
 
  useEffect(() => {
@@ -40,7 +45,7 @@ const [tempHarvestDate, setTempHarvestDate] = useState(new Date());
         try {
           const parsed = JSON.parse(storedPlots);
 
-          // Log to debug
+
           parsed.forEach((plot, i) => {
             // console.log(Plot ${i + 1} coordinates:);
             plot.coordinates.forEach((c, j) => {
@@ -189,13 +194,39 @@ const addTask = async () => {
 // };
 // clearAllStorage();
 //  },[])
+const handleSearch = async () => {
+  if (!place.trim()) return;
 
+  try {
+    const result = await Location.geocodeAsync(place);
+
+    if (result.length > 0) {
+      const { latitude, longitude } = result[0];
+
+
+      mapRef.current?.animateCamera({
+        center: { latitude, longitude },
+        zoom: 16,
+        pitch: 45,
+      });
+
+      setShowInput(false);
+      setPlace('');
+    } else {
+      alert('Location not found');
+    }
+  } catch (error) {
+    alert('Error fetching coordinates');
+    console.error(error);
+  }
+};
 
 
 
   return (
     <View style={{ flex: 1 }}>
       <MapView
+      ref={mapRef}
         style={{ width, height: '100%' }}
         mapType="satellite"
         onPress={handleMapPress}
@@ -213,13 +244,13 @@ const addTask = async () => {
   strokeColor="#000"
   fillColor={plot.color || 'rgba(0,0,255,0.3)'}
   strokeWidth={2}
-  tappable={true} // Important for Android
+  tappable={true} 
   onPress={() => {
-    setSelectedPlot(plot); // Save clicked plot
-    setModalVisible1(true); // Show modal
+    setSelectedPlot(plot); 
+    setModalVisible1(true); 
   }}
 />
-            {/* Center marker with crop name & image */}
+
             {plot.coordinates.length > 0 && (
               <Marker coordinate={plot.coordinates[0]}>
                 <View style={styles.markerBox}>
@@ -238,10 +269,10 @@ const addTask = async () => {
         ))}
       </MapView>
 
-      {/* Controls */}
+
       {!drawingMode ? (
              <TouchableOpacity
-          className="absolute top-14 right-6 z-10 bg-orange-400 p-4 px-5 rounded-2xl"
+          className="absolute top-14 right-16 z-10 bg-orange-400 p-4 px-5 rounded-2xl"
           onPress={() => setDrawingMode(true)}
         >
           <Text style={styles.drawButtonText} className="text-2xl">+</Text>
@@ -249,7 +280,7 @@ const addTask = async () => {
 
    
       ) : (
-        <View  className="absolute top-16 right-6 z-10 gap-4 p-4 rounded-2xl">
+        <View  className="absolute top-16 right-4 z-10 gap-4 p-4 rounded-2xl">
           <TouchableOpacity style={styles.actionBtn} onPress={finishDrawing}>
             <Text style={{ color: 'white' }}>Finish</Text>
           </TouchableOpacity>
@@ -389,6 +420,32 @@ const addTask = async () => {
         )}
       </View>
 </Modal> 
+ <View className="absolute top-14 right-36 z-10 bg-orange-100 p-4 rounded-2xl">
+
+
+
+      {showInput ? (
+        <View className=" flex flex-row gap-4  ">
+          <TextInput
+            className="bg-white rounded-md px-3 py-2 w-48 border border-gray-300 text-black"
+            placeholder="Enter place name"
+            placeholderTextColor="#888"
+            value={place}
+            onChangeText={setPlace}
+          />
+          <TouchableOpacity
+            onPress={handleSearch}
+            className="bg-orange-400 rounded-md py-2 w-[80px]"
+          >
+            <Text className="text-white text-center font-semibold">Search</Text>
+          </TouchableOpacity>
+        </View>
+      ):(
+      <TouchableOpacity onPress={() => setShowInput(!showInput)} >
+        <Icon name="search" size={24} color="#000" />
+      </TouchableOpacity>
+      )}
+    </View>
 <Modal visible={modalVisible} animationType="slide" transparent>
         <View style={styles.modalOverlay}>
           <View style={styles.modalBox}>

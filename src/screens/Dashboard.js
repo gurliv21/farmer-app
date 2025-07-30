@@ -70,7 +70,7 @@ const Dashboard = () => {
         Crop Area Dashboard
       </Text>
 
-      {/* Tab Buttons */}
+
       <View className="flex flex-row gap-0">
         {["overview", "tasks", "seasons"].map((tab) => (
           <TouchableOpacity
@@ -87,7 +87,7 @@ const Dashboard = () => {
         ))}
       </View>
 
-      {/* === OVERVIEW === */}
+  
       {activeTab === "overview" && (
         <ScrollView className="px-[20px] pb-[80px]">
           {cropSummary.length > 0 ? (
@@ -160,7 +160,7 @@ const Dashboard = () => {
         </ScrollView>
       )}
 
-      {/* === TASKS === */}
+
       {activeTab === "tasks" && (
         <ScrollView className="px-[20px] pb-[80px]">
           <Text className="text-lg font-bold mb-4 mt-[30px]">Tasks by Plot</Text>
@@ -197,7 +197,7 @@ const Dashboard = () => {
         </ScrollView>
       )}
 
-      {/* === SEASONS === */}
+
       {activeTab === "seasons" && (
         <ScrollView className="px-[20px] pb-[80px]">
           <Text className="text-lg font-bold mb-4 mt-[40px]">Crop Seasons Calendar</Text>
