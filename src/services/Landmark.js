@@ -44,7 +44,7 @@ export async function exploreNearby() {
 
   const places = await fetchNearbyLandmarks(location);
   if (!places || places.length === 0) {
-    Speech.speak("No interesting places found nearby.");
+    // Speech.speak("No interesting places found nearby.");
     return;
   }
 

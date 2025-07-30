@@ -1,3 +1,4 @@
+import { EXPO_PUBLIC_GEMINI_API_KEY } from '@env';
 export async function getInfo(promptText) {
   const GEMINI_API_KEY = process.env.EXPO_PUBLIC_GEMINI_API_KEY;; 
 

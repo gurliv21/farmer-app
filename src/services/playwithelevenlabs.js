@@ -1,6 +1,7 @@
 import * as FileSystem from 'expo-file-system';
 import { Audio } from 'expo-av';
 import { Buffer } from "buffer";
+import {EXPO_PUBLIC_ELEVEN_LABS_API_KEY } from '@env';
 
 const ELEVEN_LABS_API_KEY = process.env.EXPO_PUBLIC_ELEVEN_LABS_API_KEY;
 const VOICE_ID = "MF3mGyEYCl7XYWbV9V6O"; 
