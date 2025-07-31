@@ -24,7 +24,7 @@ const Dashboard = () => {
     try {
       const saved = await AsyncStorage.getItem("plots");
       const parsed = saved ? JSON.parse(saved) : [];
-      console.log(parsed)
+      // console.log(parsed)
       setPlots(parsed);
 
       const summary = {};

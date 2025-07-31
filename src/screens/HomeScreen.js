@@ -106,7 +106,7 @@ const handleMapPress = (e) => {
 
   const savePolygon = async () => {
        const area = calculatePolygonArea(currentPolygon);
-      //  console.log("area in m", areaInSqMeters);
+
 
 const newPlot = {
     id: uuidv4(), 
@@ -124,7 +124,7 @@ const newPlot = {
     setSavedPolygons(updatedPolygons);
     await AsyncStorage.setItem('plots', JSON.stringify(updatedPolygons));
 
-    // Reset
+
     setCurrentPolygon([]);
     setCropName('');
     setImage(null);
@@ -220,7 +220,53 @@ const handleSearch = async () => {
     console.error(error);
   }
 };
+const destroyField = async () => {
+  if (!selectedPlot) return;
 
+  const updatedPolygons = savedPolygons.map(p => {
+    if (p.id === selectedPlot.id) {
+      return {
+        ...p,
+        color: 'rgba(255,0,0,0.5)',  
+        crop: 'Destroyed',
+      };
+    }
+    return p;
+  });
+
+  const updatedSelected = {
+    ...selectedPlot,
+    color: 'rgba(255,0,0,0.5)',
+    crop: 'Destroyed',
+  };
+
+  setSavedPolygons(updatedPolygons);
+  await AsyncStorage.setItem('plots', JSON.stringify(updatedPolygons));
+  setSelectedPlot(updatedSelected);
+  setModalVisible1(false); 
+};
+
+const hexToRgba = (hex, alpha = 0.5) => {
+  let r = 0, g = 0, b = 0;
+
+  if (hex.startsWith('#')) {
+    hex = hex.slice(1);
+  }
+
+  if (hex.length === 3) {
+
+    r = parseInt(hex[0] + hex[0], 16);
+    g = parseInt(hex[1] + hex[1], 16);
+    b = parseInt(hex[2] + hex[2], 16);
+  } else if (hex.length === 6) {
+
+    r = parseInt(hex.substring(0, 2), 16);
+    g = parseInt(hex.substring(2, 4), 16);
+    b = parseInt(hex.substring(4, 6), 16);
+  }
+
+  return `rgba(${r},${g},${b},${alpha})`;
+};
 
 
   return (
@@ -342,6 +388,18 @@ const handleSearch = async () => {
               <Button title="Select Har Date" onPress={() => setShowHarvestPicker(true)} />
             )}
           </View>
+          <TouchableOpacity
+  onPress={destroyField}
+  style={{
+    backgroundColor: 'red',
+    padding: 12,
+    borderRadius: 12,
+    alignItems: 'center',
+    marginTop: 20,
+  }}
+>
+  <Text style={{ color: '#fff', fontWeight: 'bold' }}>Destroy Field</Text>
+</TouchableOpacity>
 
           <View style={{ marginTop: 20 }}>
             <Text className="text-black/70 font-bold"> Tasks:</Text>
