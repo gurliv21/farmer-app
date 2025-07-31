@@ -388,18 +388,7 @@ const hexToRgba = (hex, alpha = 0.5) => {
               <Button title="Select Har Date" onPress={() => setShowHarvestPicker(true)} />
             )}
           </View>
-          <TouchableOpacity
-  onPress={destroyField}
-  style={{
-    backgroundColor: 'red',
-    padding: 12,
-    borderRadius: 12,
-    alignItems: 'center',
-    marginTop: 20,
-  }}
->
-  <Text style={{ color: '#fff', fontWeight: 'bold' }}>Destroy Field</Text>
-</TouchableOpacity>
+         
 
           <View style={{ marginTop: 20 }}>
             <Text className="text-black/70 font-bold"> Tasks:</Text>
@@ -451,7 +440,21 @@ const hexToRgba = (hex, alpha = 0.5) => {
 
             )}
           </View>
+           <TouchableOpacity
+  onPress={destroyField}
+  style={{
+    backgroundColor: '#f54b31',
+    padding: 12,
+    borderRadius: 12,
+    alignItems: 'center',
+    marginTop: 20,
+    width:'150',
+  }}
+>
+  <Text style={{ color: '#fff', fontWeight: 'bold' }}>Failed Harvest</Text>
+</TouchableOpacity>
         </View>
+        
 
         {showSowPicker && (
           <DateTimePicker
